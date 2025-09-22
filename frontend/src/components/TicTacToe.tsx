@@ -133,13 +133,13 @@ export default function TicTacToe({ onWin }: Props) {
   const { board, status } = state;
 
   return (
-    <div className="max-w-sm mx-auto p-4">
-      <div className="text-center mb-2 text-xl font-semibold">{status}</div>
+    <div className="w-full p-4">
+      {/* <div className="text-center mb-2 text-xl font-semibold">{status}</div> */}
       <div className="grid grid-cols-3 gap-2">
         {board.map((c, i) => (
           <button
             key={i}
-            className="aspect-square rounded-2xl border text-3xl font-bold flex items-center justify-center disabled:opacity-50"
+            className="aspect-square rounded-2xl border-2 border-gray-800 text-3xl font-bold flex items-center justify-center disabled:opacity-50"
             onClick={() => handleClick(i)}
             aria-label={`cell-${i}`}
             disabled={loading || c !== null || state.winner !== null || state.is_draw}
@@ -148,11 +148,13 @@ export default function TicTacToe({ onWin }: Props) {
           </button>
         ))}
       </div>
+       {/*
       <div className="text-center mt-3">
         <button className="rounded-2xl px-4 py-2 border" onClick={reset} disabled={loading}>
           New Game
         </button>
       </div>
+      */}
     </div>
   );
 }
