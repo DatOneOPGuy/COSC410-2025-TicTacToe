@@ -5,6 +5,8 @@ type Cell = Player | null;
 
 type Props = {
   onWin?: (winner: Player | "draw" | null) => void;
+  isActive?: boolean;
+  onWinnerChange?: (winner: Player | "draw" | null) => void;
 };
 
 // ----- Backend DTOs -----
@@ -24,7 +26,7 @@ const API_BASE =
 
 
 
-export default function TicTacToe({ onWin }: Props) {
+export default function TicTacToe({ onWin, isActive = true, onWinnerChange }: Props) {
   const [state, setState] = React.useState<GameStateDTO | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -52,10 +54,20 @@ export default function TicTacToe({ onWin }: Props) {
 
   // Notify parent when result changes
   React.useEffect(() => {
-    if (!state || !onWin) return;
-    if (state.winner) onWin(state.winner);
-    else if (state.is_draw) onWin("draw");
-  }, [state?.winner, state?.is_draw]);
+    if (!state) return;
+    
+    let currentWinner: Player | "draw" | null = null;
+    if (state.winner) currentWinner = state.winner;
+    else if (state.is_draw) currentWinner = "draw";
+    
+    if (onWin && currentWinner) {
+      onWin(currentWinner);
+    }
+    
+    if (onWinnerChange) {
+      onWinnerChange(currentWinner);
+    }
+  }, [state?.winner, state?.is_draw, onWin, onWinnerChange]);
 
   async function createGame(): Promise<GameStateDTO> {
     const r = await fetch(`${API_BASE}/tictactoe/new`, {
@@ -82,7 +94,7 @@ export default function TicTacToe({ onWin }: Props) {
   }
 
   async function handleClick(i: number) {
-    if (!state || loading) return;
+    if (!state || loading || !isActive) return;
     // Light client-side guard to avoid noisy 400s:
     if (state.winner || state.is_draw || state.board[i] !== null) return;
 
@@ -142,7 +154,7 @@ export default function TicTacToe({ onWin }: Props) {
             className="aspect-square rounded-2xl border-2 border-gray-800 text-3xl font-bold flex items-center justify-center disabled:opacity-50"
             onClick={() => handleClick(i)}
             aria-label={`cell-${i}`}
-            disabled={loading || c !== null || state.winner !== null || state.is_draw}
+            disabled={loading || c !== null || state.winner !== null || state.is_draw || !isActive}
           >
             {c}
           </button>
