@@ -7,6 +7,7 @@ type Props = {
   onWin?: (winner: Player | "draw" | null) => void;
   isActive?: boolean;
   onWinnerChange?: (winner: Player | "draw" | null) => void;
+  onMove?: (cellIndex: number) => void;
 };
 
 // ----- Backend DTOs -----
@@ -26,7 +27,7 @@ const API_BASE =
 
 
 
-export default function TicTacToe({ onWin, isActive = true, onWinnerChange }: Props) {
+export default function TicTacToe({ onWin, isActive = true, onWinnerChange, onMove }: Props) {
   const [state, setState] = React.useState<GameStateDTO | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -103,6 +104,8 @@ export default function TicTacToe({ onWin, isActive = true, onWinnerChange }: Pr
     try {
       const next = await playMove(i);
       setState(next);
+      // Notify parent/meta-game about the move so it can enforce board constraints
+      if (onMove) onMove(i);
     } catch (e: any) {
       setError(e?.message ?? "Move failed");
     } finally {
