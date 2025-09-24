@@ -67,7 +67,7 @@ export default function TicTacToe({ onWin, isActive = true, onWinnerChange }: Pr
     if (onWinnerChange) {
       onWinnerChange(currentWinner);
     }
-  }, [state?.winner, state?.is_draw, onWin, onWinnerChange]);
+  }, [state?.winner, state?.is_draw]);
 
   async function createGame(): Promise<GameStateDTO> {
     const r = await fetch(`${API_BASE}/tictactoe/new`, {
