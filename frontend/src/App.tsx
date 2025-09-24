@@ -24,7 +24,7 @@ export default function App() {
       <MetaBoard boardWinners={boardWinners} />
       
       {/* Main 3x3 TicTacToe Grid */}
-      <div className="grid grid-cols-3 max-w-6xl mx-auto">
+      <div className="grid grid-cols-3 max-w-2xl mx-auto">
         {/* Row 1 */}
         <div className="border-gray-800 border-r-8 border-b-8">
           <TicTacToe isActive={true} onWinnerChange={(winner) => handleWinnerChange(0, winner)} />
